@@ -1,67 +1,59 @@
 <template>
   <AudienceArea :city="value" :get-geography-city-options="getGeographyCityOptions"
-    :get-develop-city-options="getDevelopCityOptions" :get-county-options="getCountyOptions" :showTip="inGeoWhiteList">
+    :get-develop-city-options="getDevelopCityOptions" :get-county-options="getCountyOptions" :showTip="true">
   </AudienceArea>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { provinceCityOptions, developCityOptions, countyOptions, getAllDistrictOptions, getAllCityOptionsByDevelop } from '../mock/audience'
+import { getAllDistrictOptions, getAllCityOptionsByDevelop } from '../mock/audience'
+
+// 由于window.whiteList?.audience_district_upgrade恒为true，我们可以：
+// 1. 移除对window.whiteList的引用
+// 2. 直接使用getAllDistrictOptions和getAllCityOptionsByDevelop
+// 3. 移除不必要的条件判断
+
 const value = ref<string[]>([])
-const inGeoWhiteList = window.whiteList?.audience_district_upgrade;
+
+// 获取地理城市选项
 const getGeographyCityOptions = async () => {
-  if (inGeoWhiteList) {
-    try {
-      const options = await getAllDistrictOptions();
-      return options;
-    } catch (err) {
-      console.error(err);
-      return {
-        code: 0,
-        data: []
-      };
-    }
+  try {
+    const options = await getAllDistrictOptions();
+    return options;
+  } catch (err) {
+    console.error(err);
+    return {
+      code: 0,
+      data: []
+    };
   }
-  return {
-    code: 0,
-    data: provinceCityOptions
-  };
-};
-const getDevelopCityOptions = async () => {
-  if (inGeoWhiteList) {
-    try {
-      const options = await getAllCityOptionsByDevelop();
-      return options;
-    } catch (err) {
-      console.error(err);
-      return {
-        code: 0,
-        data: []
-      };
-    }
-  }
-  return {
-    code: 0,
-    data: developCityOptions
-  };
-};
-const getCountyOptions = async () => {
-  if (inGeoWhiteList) {
-    try {
-      const options = await getAllDistrictOptions();
-      return options;
-    } catch (err) {
-      console.error(err);
-      return {
-        code: 0,
-        data: []
-      };
-    }
-  }
-  return {
-    code: 0,
-    data: countyOptions
-  };
 };
 
+// 获取发展城市选项
+const getDevelopCityOptions = async () => {
+  try {
+    const options = await getAllCityOptionsByDevelop();
+    return options;
+  } catch (err) {
+    console.error(err);
+    return {
+      code: 0,
+      data: []
+    };
+  }
+};
+
+// 获取区县选项
+const getCountyOptions = async () => {
+  try {
+    const options = await getAllDistrictOptions();
+    return options;
+  } catch (err) {
+    console.error(err);
+    return {
+      code: 0,
+      data: []
+    };
+  }
+};
 </script>
