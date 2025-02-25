@@ -3,12 +3,7 @@ const isAvailable = async ({
   externalAction,
   isEdit,
   isFxg,
-  apiAllowOptimizePeriod,
 }: Record<string, boolean>) => {
-  const showOptimizePeriod = externalAction && isFxg;
-  return (
-    showOptimizePeriod &&
-    !isEdit &&
-    (window.whiteList.long_period_white_list_optimize || apiAllowOptimizePeriod)
-  );
+  // 只需要判断基础条件
+  return externalAction && isFxg && !isEdit;
 };
